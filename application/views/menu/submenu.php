@@ -11,7 +11,7 @@
     <?= $this->session->flashdata('message'); ?>
 
     <div class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-12">
 
             <button class="btn btn-primary" data-toggle="modal" data-target="#addSubMenuModal">Add sub menu</button>
 
@@ -20,7 +20,7 @@
                     <tr>
                         <th scope="col">No</th>
                         <th scope="col">Menu</th>
-                        <th scope="col">Title</th>
+                        <th scope="col">Submenu Title</th>
                         <th scope="col">Url</th>
                         <th scope="col">Icon</th>
                         <th scope="col">Active</th>
@@ -41,7 +41,7 @@
                             <td><?= $sm['is_active'] == 1 ? 'yes' : 'no'; ?></td>
                             <td>
                                 <a href="" class="badge badge-warning">Edit</a>
-                                <a href="" class="badge badge-danger">Delete</a>
+                                <a href="<?= base_url('menu/deletesubmenu/' . $sm['id']); ?>" onclick="return confirm('Anda yakin?')" class=" badge badge-danger">Delete</a>
                             </td>
                         </tr>
                     <?php
@@ -73,10 +73,15 @@
             <form action="" method="POST">
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="menuId" name="menuId" placeholder="menu id">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="submenu title">
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" id="title" name="title" placeholder="title">
+                        <select name="menuId" id="menuId" class="form-control">
+                            <option value="">Select Menu</option>
+                            <?php foreach ($menu as $m) : ?>
+                                <option value="<?= $m['id']; ?>"><?= $m['menu'] ?></option>
+                            <?php endforeach ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <input type="text" class="form-control" id="url" name="url" placeholder="url">
@@ -86,7 +91,7 @@
                     </div>
                     <div class="form-group">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="isActive" name="isActive" checked>
+                            <input class="form-check-input" type="checkbox" value="1" id="isActive" name="isActive" checked>
                             <label class="form-check-label" for="isActive">
                                 Active?
                             </label>

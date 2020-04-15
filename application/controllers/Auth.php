@@ -11,6 +11,8 @@ class Auth extends CI_Controller
 
     public function index()
     {
+        $this->_alreadyLogIn();
+
         $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email');
         $this->form_validation->set_rules('password', 'Password', 'required|trim');
 
@@ -26,6 +28,8 @@ class Auth extends CI_Controller
 
     private function _login()
     {
+        $this->_alreadyLogIn();
+
         $email = $this->input->post('email', true);
         $password = $this->input->post('password', true);
 
@@ -104,5 +108,22 @@ class Auth extends CI_Controller
 
         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">You have been logged out</div>');
         redirect('auth');
+    }
+
+    private function _alreadyLogIn()
+    {
+        switch ($this->session->userdata('role_id')) {
+            case 1:
+                redirect('admin');
+                break;
+            case 2:
+                redirect('user');
+                break;
+        }
+    }
+
+    public function blocked()
+    {
+        $this->load->view('auth/blocked');
     }
 }
