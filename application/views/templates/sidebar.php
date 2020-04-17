@@ -2,7 +2,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url(); ?>">
         <div class="sidebar-brand-text mx-3">Matuda Admin</div>
     </a>
 
@@ -44,7 +44,7 @@
 
         <?php foreach ($subMenu as $sm) : ?>
             <li class="nav-item <?= $title == $sm['title'] ? "active" : "" ?>">
-                <a class="nav-link" href="<?= base_url($sm['url']); ?>">
+                <a class="nav-link py-2" href="<?= base_url($sm['url']); ?>">
                     <i class="<?= $sm['icon']; ?>"></i>
                     <span><?= $sm['title']; ?></span></a>
             </li>
