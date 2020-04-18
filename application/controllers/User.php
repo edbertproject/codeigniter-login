@@ -68,4 +68,47 @@ class User extends CI_Controller
             redirect('user');
         }
     }
+
+    public function changepassword()
+    {
+        $data['title'] = "Change Password";
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+
+        $this->form_validation->set_rules('current_password', 'Old Password', 'required|trim');
+        $this->form_validation->set_rules('password1', 'New Password', 'required|trim|min_length[3]|matches[password2]', [
+            'matches' => 'Password dont matches',
+            'min_length' => 'Password too short',
+        ]);
+        $this->form_validation->set_rules('password2', 'Confirm Password', 'required|trim|matches[password1]');
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->load->view("templates/header", $data);
+            $this->load->view("templates/sidebar", $data);
+            $this->load->view("templates/topbar", $data);
+            $this->load->view("user/changepassword", $data);
+            $this->load->view("templates/footer");
+        } else {
+            $old_password = $this->input->post('current_password');
+            $new_password = $this->input->post('password1');
+
+            if (!password_verify($old_password, $data['user']['password'])) {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Wrong password!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                redirect('user/changepassword');
+            } else {
+                if ($old_password == $new_password) {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">New Password cannot be the same!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                    redirect('user/changepassword');
+                } else {
+
+                    // password sudah bisa dimasukkan
+                    $this->db->set('password', password_hash($new_password, PASSWORD_DEFAULT));
+                    $this->db->where('email', $this->session->userdata('email'));
+                    $this->db->update('user');
+
+                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Password has been changed!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                    redirect('user/changepassword');
+                }
+            }
+        }
+    }
 }
